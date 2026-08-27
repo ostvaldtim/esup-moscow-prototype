@@ -1,14 +1,16 @@
 # ESUP Moscow Prototype
 
-Sanitized portfolio case based on a prototype for **digital accounting policy management for Moscow public-sector organizations**.
+Prototype for a Moscow Department of Finance case on digital accounting policy for public-sector organizations.
 
-The project was developed from an official Moscow Department of Finance challenge brief. The core idea was to turn a large standardized accounting policy (СУП) from a document into structured blocks, assemble an organization-specific policy, validate it and prepare structured settings for 1C-oriented workflows.
+The starting point was a large standardized accounting policy (СУП) in Word. The system split it into structured blocks, filtered them for a specific organization, helped assemble an organization-level policy, checked completeness and prepared selected rules for further use in 1C workflows.
 
 ![Structured document import](docs/screenshots/document-import.webp)
 
-## Product flow
+## Flow
 
-`Word document → structured SUP blocks → organization parameters → selection / AI assistance → completeness check → approval / export → 1C-oriented workflow`
+`Word → structured SUP blocks → organization parameters → block selection → completeness check → approval / export → 1C`
+
+## Screens
 
 | Normative research | Inventory-number template |
 | --- | --- |
@@ -16,47 +18,47 @@ The project was developed from an official Moscow Department of Finance challeng
 | **Block management** | **Policy approval / 1C export** |
 | ![Block management](docs/screenshots/block-management.webp) | ![Policy approval](docs/screenshots/policy-approval.webp) |
 
-## What the prototype explored
+## What was implemented
 
-- Word-to-structured-block parsing for accounting policy documents
+- parsing Word documents into sections, subsections and blocks
 - filtering blocks by organization parameters, accounting type and industry
-- AI-assisted recommendations and normative-research concepts
-- guided policy assembly and completeness validation
-- block status, versioning and comparison
-- Word generation and approval/signature-oriented workflows
-- structured export / integration concepts for 1C:Accounting for Public Institutions
+- YandexGPT recommendations for block applicability
+- a step-by-step policy builder
+- completeness checks for required and recommended blocks
+- block status, version comparison and document generation
+- approval/signature flow concepts and preparation of structured settings for 1C
 
 ## My contribution
 
-**Artem Ostvald — interface work and AI-assisted document processing/generation improvements.**
+**Artem Ostvald — interface work and improvements to document processing, generation and AI-assisted features.**
 
-The project was collaborative; frontend, backend, database and 1C-related work was shared across the team.
+This was a team project. Frontend, backend, database and 1C-related work was shared between the participants.
 
 ## Team
 
-- **Artem Ostvald** — interface work; AI-assisted document processing/generation improvements
-- **Zakhar Kondratiev** — team contributor
-- **Nikita Musienko** — team contributor
+- **Artem Ostvald**
+- **Zakhar Kondratiev**
+- **Nikita Musienko**
 
-This repository does not attempt to reconstruct exact per-file authorship for the historical collaborative prototype.
+The project is about a year old, so exact ownership of every individual file is not preserved.
 
-## Representative code
+## Code in this repository
 
-- `code-samples/client/Wizard.tsx` — guided policy assembly
+- `code-samples/client/Wizard.tsx` — policy assembly flow
 - `code-samples/client/BlockSelector.tsx` — block selection and recommendations
-- `code-samples/client/CompletenessChecker.tsx` — completeness validation
+- `code-samples/client/CompletenessChecker.tsx` — completeness check
 - `code-samples/client/DiffViewer.tsx` — version comparison
 - `code-samples/server/wordParser.ts` — Word → structured blocks
-- `code-samples/server/wordGenerator.ts` — policy document generation
-- `code-samples/server/yandexgpt.ts` — AI-assisted recommendation logic
-- `code-samples/shared/schema.ts` — representative data model
+- `code-samples/server/wordGenerator.ts` — Word document generation
+- `code-samples/server/yandexgpt.ts` — YandexGPT recommendation logic
+- `code-samples/shared/schema.ts` — core data model
 
 ## Stack
 
-`React` · `TypeScript` · `Node.js` · `Express` · `PostgreSQL` · `Drizzle ORM` · `Mammoth` · `docx` · `YandexGPT` · `1C-oriented integration`
+`React` · `TypeScript` · `Node.js` · `Express` · `PostgreSQL` · `Drizzle ORM` · `Mammoth` · `docx` · `YandexGPT`
 
-## Public scope
+## Repository note
 
-This is a **sanitized portfolio reconstruction**, not the full submission and not a production deployment. Credentials, real organization seed data, official 1C configuration files, challenge attachments, temporary infrastructure and internal submission artifacts are intentionally omitted.
+This repository contains a cleaned subset of the original prototype. Secrets, real organization data, official 1C configuration files and challenge attachments are not included. It is not the production system of the Moscow Department of Finance.
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/PUBLIC_SCOPE.md`](docs/PUBLIC_SCOPE.md).
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
