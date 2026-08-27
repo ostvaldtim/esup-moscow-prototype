@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type { Organization, PolicySection } from '@shared/schema';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -7,10 +7,10 @@ import { Progress } from '@/components/ui/progress';
 import { apiRequest } from '@/lib/queryClient';
 
 const STEPS = [
-  { id: 1, title: 'Select Organization' },
-  { id: 2, title: 'Review Sections' },
-  { id: 3, title: 'Select Sections' },
-  { id: 4, title: 'Preview & Generate' },
+  { id: 1, title: 'Организация' },
+  { id: 2, title: 'Применимые разделы' },
+  { id: 3, title: 'Выбор разделов' },
+  { id: 4, title: 'Предпросмотр' },
 ];
 
 type WizardState = {
@@ -31,16 +31,15 @@ export default function Wizard() {
 
   const { data: applicableSections = [] } = useQuery<PolicySection[]>({
     queryKey: ['/api/policy-sections/applicable', state.organizationId],
-    enabled: Boolean(state.organizationId),
+    enabled: state.organizationId !== null,
   });
 
   const generatePolicy = useMutation({
-    mutationFn: async () => {
-      return apiRequest('POST', '/api/generated-policies', {
+    mutationFn: () =>
+      apiRequest('POST', '/api/generated-policies', {
         organizationId: state.organizationId,
         selectedSections: state.selectedSections,
-      });
-    },
+      }),
   });
 
   const selectedOrg = organizations.find(org => org.id === state.organizationId);
@@ -57,6 +56,11 @@ export default function Wizard() {
     }));
   };
 
+  const canGoNext =
+    (currentStep === 1 && state.organizationId !== null) ||
+    currentStep === 2 ||
+    (currentStep === 3 && state.selectedSections.length > 0);
+
   const progress = (currentStep / STEPS.length) * 100;
 
   return (
@@ -65,7 +69,10 @@ export default function Wizard() {
 
       <div className="flex gap-3 text-sm">
         {STEPS.map(step => (
-          <span key={step.id} className={step.id === currentStep ? 'font-semibold' : 'text-muted-foreground'}>
+          <span
+            key={step.id}
+            className={step.id === currentStep ? 'font-semibold' : 'text-muted-foreground'}
+          >
             {step.id}. {step.title}
           </span>
         ))}
@@ -73,12 +80,14 @@ export default function Wizard() {
 
       {currentStep === 1 && (
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Организация</h2>
+          <h2 className="text-lg font-semibold">Выберите организацию</h2>
           {organizations.map(org => (
             <Button
               key={org.id}
               variant={state.organizationId === org.id ? 'default' : 'outline'}
-              onClick={() => setState(prev => ({ ...prev, organizationId: org.id }))}
+              onClick={() =>
+                setState({ organizationId: org.id, selectedSections: [] })
+              }
             >
               {org.name}
             </Button>
@@ -103,7 +112,7 @@ export default function Wizard() {
 
       {currentStep === 3 && (
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Выбор разделов</h2>
+          <h2 className="text-lg font-semibold">Выберите разделы для политики</h2>
           {applicableSections.map(section => (
             <label key={section.id} className="flex items-start gap-3 border rounded-lg p-3">
               <Checkbox
@@ -112,7 +121,9 @@ export default function Wizard() {
               />
               <span>
                 <strong>{section.sectionNumber} — {section.title}</strong>
-                <span className="block text-sm text-muted-foreground">{section.content.substring(0, 120)}...</span>
+                <span className="block text-sm text-muted-foreground">
+                  {section.content.substring(0, 120)}...
+                </span>
               </span>
             </label>
           ))}
@@ -135,10 +146,17 @@ export default function Wizard() {
       )}
 
       <div className="flex justify-between">
-        <Button variant="outline" disabled={currentStep === 1} onClick={() => setCurrentStep(step => step - 1)}>
+        <Button
+          variant="outline"
+          disabled={currentStep === 1}
+          onClick={() => setCurrentStep(step => step - 1)}
+        >
           Назад
         </Button>
-        <Button disabled={currentStep === 4} onClick={() => setCurrentStep(step => step + 1)}>
+        <Button
+          disabled={currentStep === 4 || !canGoNext}
+          onClick={() => setCurrentStep(step => step + 1)}
+        >
           Далее
         </Button>
       </div>
