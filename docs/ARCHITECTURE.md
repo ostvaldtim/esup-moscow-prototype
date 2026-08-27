@@ -1,34 +1,32 @@
 # Architecture
 
-## Problem model
+The prototype starts with a standardized accounting policy (СУП) stored as a large Word document. The goal is to turn that document into structured data that can be filtered for a specific organization and then used to assemble its accounting policy.
 
-The original challenge starts from a large standardized accounting policy (СУП) that exists primarily as a document. Organizations need only the provisions that apply to their accounting type, industry and organizational parameters. Those choices should then remain consistent with the organization's accounting policy and with relevant 1C settings.
+## Processing flow
 
-## Prototype pipeline
+1. **Import** — extract text from a Word document.
+2. **Structure** — split numbered provisions into sections, subsections and blocks.
+3. **Parameterize** — attach applicability criteria such as industry and accounting type.
+4. **Select** — show only the blocks relevant to the selected organization.
+5. **Recommend** — YandexGPT can mark a block as mandatory, recommended or optional and return a short explanation.
+6. **Validate** — check whether required and recommended content is present.
+7. **Version** — compare revisions and preserve previous versions.
+8. **Generate** — assemble the selected content into a Word document.
+9. **Prepare for 1C** — represent selected structured rules in a form suitable for downstream 1C workflows.
 
-1. **Import** — a Word document can be parsed into text.
-2. **Structure** — numbered provisions are converted into blocks with section/subsection context.
-3. **Parameterize** — blocks can be associated with applicability criteria such as industry and accounting type.
-4. **Select** — the interface helps a user select applicable blocks for an organization.
-5. **Assist** — an LLM can classify a block as mandatory, recommended or optional and return a short reason.
-6. **Validate** — completeness logic checks whether required/recommended content is present before approval-oriented actions.
-7. **Version** — block/policy revisions can be compared and historical state preserved.
-8. **Generate** — the selected policy can be assembled into a Word document.
-9. **Integrate** — structured policy choices can be represented as settings intended for downstream 1C workflows.
+## Recommendation layer
 
-## AI layer
-
-The representative YandexGPT module sends organization context plus a truncated policy block to the model and requests a structured JSON recommendation:
+The YandexGPT module receives organization context and a policy block and returns a small JSON object:
 
 ```json
 {
-  "recommendation": "mandatory | recommended | optional",
-  "reason": "short explanation"
+  "recommendation": "mandatory",
+  "reason": "Short explanation"
 }
 ```
 
-The prototype also includes deterministic filtering by organization metadata. AI assistance therefore supplements, rather than replaces, explicit rule-based applicability logic.
+Rule-based filtering remains separate from the model call. The model is used as an additional recommendation layer, not as the source of truth for applicability.
 
-## Public reconstruction
+## What is published here
 
-The full submission contained credentials, deployment artifacts, official challenge files, seed data and 1C assets. Those are not part of this public version. Only representative implementation modules are included.
+This repository contains only selected implementation files needed to show the main flow. Credentials, deployment artifacts, real organization data, official challenge materials and 1C configuration files are excluded.
