@@ -30,13 +30,13 @@ The starting point was a large standardized accounting policy (СУП) in Word. 
 
 ## My contribution
 
-**Artem Ostvald — interface work and improvements to document processing, generation and AI-assisted features.**
+**Tim Ostvald — interface work and improvements to document processing, generation and AI-assisted features.**
 
 This was a team project. Frontend, backend, database and 1C-related work was shared between the participants.
 
 ## Team
 
-- **Artem Ostvald**
+- **Tim Ostvald**
 - **Zakhar Kondratiev**
 - **Nikita Musienko**
 
